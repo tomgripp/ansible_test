@@ -1,2 +1,5 @@
-192.168.50.96 apache_package=apache2 php_package=libapache2-mod-php qemu_package=qemu-guest-agent
+[web_servers]
+192.168.50.96 qemu_package=qemu-guest-agent
+
+[db_servers]
 192.168.50.213 qemu_package=qemu-guest-agent 
