@@ -24,6 +24,13 @@
       state: latest
     when: ansible_distribution == "Debian"
 
+  - name: start apache
+    tags: apache,apache2
+    service:
+      name: apache2
+      state: started
+      enabled: yes
+
   - name: copy default html file for site
     tags: apache,apache2
     copy:
