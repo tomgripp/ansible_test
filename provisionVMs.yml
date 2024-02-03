@@ -23,3 +23,10 @@
         - qemu-guest-agent
       state: latest
       update_cache: yes
+
+  - name: start qemu-guest-agent
+    service:
+      name: qemu-guest-agent
+      state: started
+      enabled: yes
+ 
