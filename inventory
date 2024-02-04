@@ -1,5 +1,4 @@
 [web_servers]
-192.168.50.96 qemu_package=qemu-guest-agent
+192.168.50.8
 
 [db_servers]
-192.168.50.213 qemu_package=qemu-guest-agent 
