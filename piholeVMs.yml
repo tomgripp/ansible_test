@@ -5,7 +5,7 @@
 
   pre_tasks:
 
-  - name: update servers
+  - name: Update servers
     tags: always
     apt:
       upgrade: dist
@@ -13,21 +13,71 @@
 
   tasks:
 
-  - name: set time-zone to EST
+  - name: Set time-zone to EST
     community.general.timezone:
       name: America/New_York
 
-  - name: install qemu-guest-agent
+  - name: Install qemu-guest-agent
     apt:
       name:
         - qemu-guest-agent
       state: latest
       update_cache: yes
 
-  - name: download piHole installation script
-    get_url:
-      url: https://install.pi-hole.net
-      dest: /home/tgrippo/basic-install.sh
+  - name: Create pihole group
+    group:
+      name: pihole
+      state: present
+    tags:
+      - pihole
 
-  - name: execute piHole installation script
-    script: /Users/tomgripp/ansible_test/pihole-install.sh
+  - name: Create pihole user
+    user:
+      name: pihole
+      group: pihole
+      create_home: false
+      shell: /usr/sbin/nologin
+      state: present
+    tags:
+      - pihole
+
+  - name: Create /etc/pihole directory
+    file:
+      path: /etc/pihole
+      state: directory
+      owner: pihole
+      group: pihole
+      mode: '0775'
+    tags:
+      - pihole
+
+  - name: Create /etc/dnsmasq.d directory
+    file:
+      path: /etc/dnsmasq.d
+      state: directory
+      owner: root
+      group: root
+      mode: '0755'
+
+  - name: Check if /etc/pihole/setupVars.conf already exists
+    stat:
+      path: /etc/pihole/setupVars.conf
+    register: setupvars
+
+  - name: Create setupVars.conf
+    copy:
+      src: ./pihole/setupVars.conf
+      dest: /etc/pihole/setupVars.conf
+      owner: root
+      group: root
+      mode: '0644'
+    when: setupvars.stat.exists == false
+
+  - name: Check if pihole already installed
+    stat:
+      path: /usr/local/bin/pihole
+    register: pihole_installed
+
+  - name: Install pihole
+    shell: 'curl -L https://install.pi-hole.net | bash /dev/stdin --unattended'
+    when: pihole_installed.stat.exists == false
