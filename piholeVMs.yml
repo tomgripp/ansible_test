@@ -23,6 +23,12 @@
       state: latest
       update_cache: yes
 
+  - name: Enable qemu-guest-agent
+    service:
+      name: qemu-guest-agent
+      state: started
+      enabled: yes
+
   - name: Create pihole group
     group:
       name: pihole
