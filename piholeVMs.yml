@@ -6,7 +6,6 @@
   pre_tasks:
 
   - name: Update servers
-    tags: always
     apt:
       upgrade: dist
       update_cache: yes
@@ -81,3 +80,29 @@
   - name: Install pihole
     shell: 'curl -L https://install.pi-hole.net | bash /dev/stdin --unattended'
     when: pihole_installed.stat.exists == false
+
+  - name: Install Unbound
+    apt:
+      name:
+        - unbound
+      state: latest
+
+  - name: Check to see if /etc/unbound/unbound.conf.d/pi-hole.conf exists
+    stat:
+      path: /etc/unbound/unbound.conf.d/pi-hole.conf
+    register: unbound_config
+
+  - name: Create /etc/unbound/unbound.conf.d/pi-hole.conf
+    copy:
+      src: ./pihole/unbound.conf
+      dest: /etc/unbound/unbound.conf.d/pi-hole.conf
+      owner: root
+      group: root
+      mode: '0644'
+    when: unbound_config.stat.exists == false
+
+  - name: Restart unbound
+    service:
+      name: unbound
+      state: restarted
+      enabled: yes
