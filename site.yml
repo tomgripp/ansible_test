@@ -1,0 +1,23 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: install updates
+    apt:
+      update_cache: yes
+      upgrade: dist
+    when: ansible_distribution == "Debian"
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+  - name: install apache2 and libapache2-mod-php
+    apt:
+      name:
+      - apache2
+      - libapache2-mod-php
+      state: latest
+    when: ansible_distribution == "Debian"

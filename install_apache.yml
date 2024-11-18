@@ -4,12 +4,20 @@
   become: true
   tasks:
 
-  - name: install apache and php package
-
-    package:
-      update_cache: yes
-      name: 
-        - "{{ apache_package }}"
-        - "{{ php_package }}"
+  - name: install apache2 and libapache2-mod-php
+    apt:
+      name:
+      - apache2
+      - libapache2-mod-php
       state: latest
+      update_cache: yes
+    when: ansible_distribution == "Debian"
 
+  - name: install httpd and php
+    apt:
+      name:
+      - httpd
+      - php
+      state: latest
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
