@@ -5,6 +5,7 @@
   pre_tasks:
 
   - name: install updates
+    tags: always
     apt:
       update_cache: yes
       upgrade: dist
@@ -15,6 +16,7 @@
   tasks:
 
   - name: install apache2 and libapache2-mod-php
+    tags: apache,debian
     apt:
       name:
       - apache2
@@ -27,6 +29,7 @@
   tasks:
 
   - name: install mariadb package
+    tags: mariadb,db,debian
     apt:
       name: mariadb-server
       state: latest
